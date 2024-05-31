@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
+pydantic-settings = "*"
+python-dotenv = "*"
+loguru = "*"
+logtail-python = "*"
+prometheus-fastapi-instrumentator = "*"
+ruff = "*"
+pre-commit = "*"
+setuptools = "*"
+aioredis = {extras = ["hiredis"], version = "*"}
+redis = {extras = ["hiredis"], version = "*"}
+pytz = "*"
+passlib = {extras = ["bcrypt"], version = "*"}
+cryptography = "*"
+python-jose = "*"
+pytest = "*"
+pytest-asyncio = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
+python_full_version = "3.12.1"
