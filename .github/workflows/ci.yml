@@ -1,4 +1,4 @@
-name: MiQ tests
+name: CI
 
 on:
   push:
