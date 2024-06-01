@@ -12,7 +12,7 @@ from app.database.enums import UserRole
 
 
 class UserResponseModel(BaseModel):
-    guid: UUID = Field(default=...)
+    guid: UUID = Field(default=None)
     name: StrictStr = Field(default=...)
     last_name: StrictStr = Field(default=...)
     email: EmailStr = Field(default=...)

@@ -1,13 +1,13 @@
 from typing import Iterable, List
 
-from sqlalchemy import BinaryExpression
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.elements import ColumnElement
 
 from app.database.models.user import User
 
 
 def find_user(
-    session: Session, criteria: Iterable[BinaryExpression] = tuple()
+    session: Session, criteria: Iterable[ColumnElement[bool]] = tuple()
 ) -> User | None:
     """
     Find a user in the database based on the specified criteria.
