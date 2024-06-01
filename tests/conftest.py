@@ -2,11 +2,14 @@ from typing import Any, Generator
 from uuid import uuid4
 
 import pytest
+from dotenv import load_dotenv
 from fastapi.testclient import TestClient
 
 from app.database.models.user import User
 from app.main import app
 from tests.mocks import CURRENT_AUTH_USER
+
+load_dotenv()
 
 
 @pytest.fixture
