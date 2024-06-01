@@ -50,11 +50,11 @@ jobs:
         python-version: "3.11"
     - name: Install dependencies
       run: |
+        apt-get install build-essential
         python -m pip install --upgrade pip
         pip install pipenv
         apt-get update
         apt-get install -y --no-install-recommends gcc python3-dev libssl-dev
-        apt-get install build-essentia
         pipenv install --deploy --system
     - name: Test with pytest
       run: |
