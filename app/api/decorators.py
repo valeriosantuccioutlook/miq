@@ -3,6 +3,7 @@ import traceback
 from functools import wraps
 from typing import Any, Callable, List, Tuple
 
+from fastapi import Request
 from fastapi.exceptions import HTTPException
 from psycopg2.errors import UniqueViolation
 from redis.commands.core import ResponseT
@@ -94,7 +95,7 @@ def cache_result(key: str, ttl: int) -> Any:
     Decorator function to cache the result of an asynchronous function.
 
     Args:
-        :key (str): The key under which to cache the result.
+        :key (str): The base key under which to cache the result. This key will be combined with offset and limit.
         :ttl (int): The time-to-live (TTL) duration for the cached result, in seconds.
 
     Returns:
@@ -107,11 +108,11 @@ def cache_result(key: str, ttl: int) -> Any:
     Description:
         This decorator function caches the result of the decorated asynchronous function.
         It performs the following steps:
-            1. Checks if the result is cached using the provided cache key.
+            1. Checks if the result is cached using the provided cache key combined with offset and limit.
             2. If the result is cached, returns the cached result.
             3. If the result is not cached, computes the result by calling the decorated function.
             4. Converts the SQLAlchemy ORM instances returned by the decorated function to Pydantic models.
-            5. Caches the result using the provided cache key and TTL.
+            5. Caches the result using the provided cache key combined with offset and limit.
             6. Returns the computed result.
     """
 
@@ -119,8 +120,16 @@ def cache_result(key: str, ttl: int) -> Any:
         @wraps(wrapped=func)
         async def wrapper(*args, **kwargs) -> Any:
             try:
+                cache_key = key
+                if kwargs.get("request"):
+                    request: Request = kwargs["request"]
+                    # extract offset and limit from query parameters
+                    offset: str | int = request.query_params.get("offset", default=0)
+                    limit: str | int = request.query_params.get("limit", default=100)
+                    cache_key: str = f"{key}_offset_{offset}_limit_{limit}"
+
                 # check if the result is cached
-                cached: ResponseT = redis.get(name=key)
+                cached: ResponseT = redis.get(name=cache_key)
                 if cached is not None:
                     return json.loads(s=cached)
                 # compute the result
@@ -132,7 +141,7 @@ def cache_result(key: str, ttl: int) -> Any:
                 ]
                 # cache the result
                 redis.setex(
-                    name=key,
+                    name=cache_key,
                     time=ttl,
                     value=json.dumps([m.model_dump() for m in models]),
                 )

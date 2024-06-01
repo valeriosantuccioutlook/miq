@@ -23,17 +23,19 @@ def find_user(
     return session.query(User).filter(*criteria).one_or_none()
 
 
-def find_users(session: Session) -> List[User]:
+def find_users(session: Session, offset: int = 0, limit: int = 100) -> List[User]:
     """
-    Retrieve a list of all users from the database.
+    Retrieve a list of users from the database with optional pagination.
 
     Args:
         :session (Session): The SQLAlchemy database session.
+        :offset (int, optional): The offset index for pagination. Defaults to 0.
+        :limit (int, optional): The maximum number of users to retrieve. Defaults to 100.
 
     Returns:
-        :List[User]: A list containing all users retrieved from the database.
+        :List[User]: A list containing users retrieved from the database according to the specified offset and limit.
     """
-    return session.query(User).all()
+    return session.query(User).offset(offset=offset).limit(limit=limit).all()
 
 
 def add_user(session: Session, user: User) -> None:

@@ -1,12 +1,13 @@
 from typing import Annotated, List
 from uuid import UUID
 
-from fastapi import APIRouter, Body, Depends, Path
+from fastapi import APIRouter, Body, Depends, Path, Query, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from starlette import status
 
 from app.api import corefuncs
+from app.api.constants import GET_USERS_REDIS_K
 from app.api.decorators import cache_result, manage_transaction, role_checker
 from app.database.enums import UserRole
 from app.database.models.user import User
@@ -26,22 +27,28 @@ router = APIRouter(prefix="/users")
     response_model=List[UserResponseModel],
 )
 @role_checker(role_levels=(UserRole.admin, UserRole.viewer))
-@cache_result(key="users", ttl=3600)
+@cache_result(key=GET_USERS_REDIS_K, ttl=3600)
 async def get_users(
+    request: Request,
     session_user: Annotated[User, Depends(dependency=get_current_user)],
     session: Annotated[Session, Depends(dependency=get_db)],
+    offset: Annotated[int, Query(default=...)] = 0,
+    limit: Annotated[int, Query(default=...)] = 100,
 ) -> List[User]:
     """
     Retrieve all users from the database.
 
     Args:
+        :request (Request): The FastAPI request object.
         :session_user (User): The current logged user.
         :session (Session): The SQLAlchemy database session.
+        :offset (int): Offset for pagination. Defaults to 0.
+        :limit (int): Limit for pagination. Defaults to 100.
 
     Returns:
-        :List[User]: A list of user objects retrieved from the database.
+        :List[UserResponseModel]: A list of user objects retrieved from the database.
     """
-    return await corefuncs.get_users(session=session)
+    return await corefuncs.get_users(session=session, offset=offset, limit=limit)
 
 
 @router.post(
