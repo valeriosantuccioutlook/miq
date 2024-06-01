@@ -52,7 +52,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pipenv
-        pipenv install --dev
+        apt-get update
+        apt-get install -y --no-install-recommends gcc python3-dev libssl-dev
+        pipenv install --deploy --system
     - name: Test with pytest
       run: |
         pipenv run pytest tests
