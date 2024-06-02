@@ -30,13 +30,13 @@ async def create_new_user(session: Session, user_form: UserRequestModel) -> User
         This function creates a new user in the database using the provided user form data.
         It performs the following steps:
             1. Constructs a new User object using the data from the user form.
-            2. Converts the user's name and last name to lowercase.
+            2. Converts the user's first_name and last first_name to lowercase.
             3. Hashes the user's password using the configured password hashing algorithm.
             4. Adds the user to the database session.
             5. Deletes the cached users data from the Redis cache to ensure updated data retrieval.
     """
     user = User(**user_form.model_dump())
-    user.name = user.name.lower()
+    user.first_name = user.first_name.lower()
     user.last_name = user.last_name.lower()
     user.hashed_psw = pwd_context.hash(secret=user.hashed_psw)
     crud.add_user(session=session, user=user)

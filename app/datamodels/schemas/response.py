@@ -1,19 +1,13 @@
 from uuid import UUID
 
-from pydantic import (
-    BaseModel,
-    EmailStr,
-    Field,
-    StrictStr,
-    field_serializer,
-)
+from pydantic import BaseModel, EmailStr, Field, StrictInt, StrictStr, field_serializer
 
 from app.database.enums import UserRole
 
 
 class UserResponseModel(BaseModel):
     guid: UUID = Field(default=None)
-    name: StrictStr = Field(default=...)
+    first_name: StrictStr = Field(default=...)
     last_name: StrictStr = Field(default=...)
     email: EmailStr = Field(default=...)
     role: UserRole = Field(default=UserRole.admin)
@@ -22,6 +16,8 @@ class UserResponseModel(BaseModel):
     city: StrictStr | None = Field(default=None)
     county: StrictStr | None = Field(default=None)
     country: StrictStr | None = Field(default=None)
+    age: StrictInt | None = Field(default=None, ge=1)
+    date_of_birth: StrictStr = Field(default=...)
 
     class Config:
         from_attributes = True

@@ -15,7 +15,7 @@ class User(Base):
     guid: Mapped[UUID] = mapped_column(
         primary_key=True, unique=True, index=True, nullable=False, default=uuid4
     )
-    name: Mapped[str] = mapped_column(nullable=False)
+    first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
     hashed_psw: Mapped[str] = mapped_column(nullable=False)
@@ -31,6 +31,8 @@ class User(Base):
     city: Mapped[str] = mapped_column(nullable=True)
     county: Mapped[str] = mapped_column(nullable=True)
     country: Mapped[str] = mapped_column(nullable=True)
+    age: Mapped[int] = mapped_column(nullable=True)
+    date_of_birth: Mapped[str] = mapped_column(nullable=False)
 
     def dump(self) -> Dict[Any, Any]:
         return {field.name: getattr(self, field.name) for field in self.__table__.c}
