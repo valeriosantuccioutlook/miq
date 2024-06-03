@@ -53,7 +53,7 @@ Simply open a new terminal and run:
 you'll be able to reach the following URLs:
 
 1. APIs service: http://localhost:8000/docs
-2. PostreSQL DB (CloudBEaver): http://localhost:8978
+2. PostreSQL DB (CloudBeaver): http://localhost:8978
 3. Monitornig tool (Grafana + Prometheus): http://localhost:3000
 
 
